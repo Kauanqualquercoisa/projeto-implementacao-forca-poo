@@ -1,7 +1,10 @@
 #Romulo Santos Santana
 
 import requests
+import database
 import sqlite3 as sql
+
+import database.start_db
 
 def menu_principal():
 
@@ -150,7 +153,7 @@ class Jogador():
         
     def buscar_cpf(self):
         #inicialização do banco de dados
-            banco = sql.connect("jogo_forca.db")
+            banco = sql.connect(database.start_db.DIRETORIO_FINAL)
             cursor = banco.cursor()
             cpf = self.cpf
             
