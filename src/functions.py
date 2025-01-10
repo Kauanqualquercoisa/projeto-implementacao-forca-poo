@@ -8,23 +8,14 @@ import database.start_db
 
 def menu_principal():
 
+    print("-"*45)
+    print("\t1. Jogar\n\t2. Cadastrar novo usuário\n\t\t3. Recuperar senha\n\t4. Entrar como administrador\n\t5. Sair")
+    print("-"*45)
+
     opcoes = [1, 2, 3, 4, 5]
-
-    print("-"*45)
-    print("\t1. Jogar")
-    print("\t2. Cadastrar novo usuário")
-    print("\t3. Recuperar senha")
-    print("\t4. Entrar como administrador")
-    print("\t5. Sair")
-    print("-"*45)
-
     opcao = int(input("\tDigite a opção desejada: "))
 
-    if opcao not in opcoes:
-        print("Digite uma opção válida!")
-        menu_principal()
-
-    else:
+    if opcao in opcoes:
         if opcao == 1:
             pass
         elif opcao == 2:
@@ -38,6 +29,8 @@ def menu_principal():
         elif opcao == 5:
             print("\tObrigado por jogar!")
             return
+    print("Digite uma opção válida!")
+    menu_principal()
       
 class Jogador():
     def __init__(self, cpf = "", nome = "", email = "", idade = "", cep = "", endereco = "", senha = ""):
@@ -67,21 +60,35 @@ class Jogador():
         if digito2 >= 10:
             digito2 = 0
 
-        return cpf[-2:] == f"{digito1}{digito2}"
+        return True if cpf[-2:] == f"{digito1}{digito2}" else False
 
     def requisitar_endereco(self):
-            self.req_endereco = requests.get(f"https://viacep.com.br/ws/{self.cep}/json/")
-            self.req_endereco = self.req_endereco.json()
 
-            self.logradouro = self.req_endereco["logradouro"]
-            self.bairro = self.req_endereco["bairro"]
-            self.cep = self.req_endereco["cep"]
-            self.cidade = self.req_endereco["localidade"]
-            self.estado = self.req_endereco["uf"]
-            
-            self.endereco = (f"{self.logradouro}, {self.bairro}, {self.cidade} {self.estado}, CEP: {self.cep}")
+        self.requisicao_ok = False
+        self.erro_400 = False
+        self.erro_500 = False
+        self.erro_502 = False
 
-            return self.endereco
+        self.req_endereco = requests.get(f"https://viacep.com.br/ws/{self.cep}/json/")
+        print(self.req_endereco)
+
+        if self.req_endereco.status_code == 200:
+            try:
+                self.req_endereco = self.req_endereco.json()
+                self.logradouro = self.req_endereco["logradouro"]
+                self.bairro = self.req_endereco["bairro"]
+                self.cidade = self.req_endereco["localidade"]
+                self.estado = self.req_endereco["uf"]
+                self.endereco = f"{self.logradouro}, {self.bairro}, {self.cidade} {self.estado}, CEP: {self.cep}"
+                self.requisicao_ok = True
+            except (KeyError, requests.exceptions.JSONDecodeError):
+                print("Erro ao processar a resposta da API.")
+        elif self.req_endereco.status_code == 400:
+            self.erro_400 = True
+        elif self.req_endereco.status_code == 500:
+            self.erro_500 = True
+        elif self.req_endereco.status_code == 502:
+            self.erro_502 = True
 
     def inserir_nome(self):
         while True:
@@ -97,6 +104,7 @@ class Jogador():
         while True:
             self.cpf = str(input("Digite o CPF: "))
             if Jogador.validar_cpf(self.cpf):
+                self.cpf = ''.join(filter(str.isdigit, self.cpf))
                 return self.cpf
             print("Digite um cpf válido!")
     
@@ -126,6 +134,8 @@ class Jogador():
         while True:
             self.senha = str(input("Digite a sua senha: "))
             self.senha_confirmacao = str(input("Digite novamente a senha: "))
+            if self.senha.isspace() or self.senha_confirmacao.isspace():
+                print("Insira uma senha válida!")
             if self.senha == self.senha_confirmacao:
                 confirma = str(input(f"Senha: {self.senha}. Confirma? [S/N]: ")).lower()
                 if confirma == 's':
@@ -138,8 +148,22 @@ class Jogador():
     def inserir_cep(self):
         while True:
             self.cep = str(input("Digite o seu cep: "))
+            if self.cep.isspace():
+                print("Digite um CEP válido!")
             self.cep = ''.join(filter(str.isdigit, self.cep))
             self.requisitar_endereco()
+
+            if self.requisicao_ok:
+                return self.endereco
+            if self.erro_400:
+                print("Erro 400 - Bad Request: Insira um CPF válido e tente novamente!")
+            if self.erro_500:
+                print("Erro 500 - Internal Server Error: Ocorreu um erro no servidor da API")
+                break
+            if self.erro_502:
+                print("Erro 502 - Bad Gateway: Erro de comunicação com o servidor da API.")
+                break
+            
 
     def confirmar_insercao(self, nome):
         self.confirma = str(input(f"Deseja confirmar o cadastro do usuário {nome}? [S/N]: ")).lower()
@@ -161,7 +185,9 @@ class Jogador():
             resultado = cursor.fetchall()
 
             if resultado:
-                print("Usuário já cadastrado.")
+                cursor.execute("SELECT email FROM jogador WHERE cpf = ?", (cpf,))
+                email_para_recuperacao = cursor.fetchall()
+                print(f"Usuário já cadastrado! Faça a recuperação da senha.\nEmail: {email_para_recuperacao[0][0]}")
                 banco.close()
                 return False
             else:
@@ -178,10 +204,11 @@ class Jogador():
             self.senha = self.inserir_senha()
             if self.confirmar_insercao(self.nome):
                 #inicialização do banco de dados
-                banco = sql.connect("jogo_forca.db")
+                banco = sql.connect(database.start_db.DIRETORIO_FINAL)
                 cursor = banco.cursor()
                 #inserção dos dados de novo usuário
-                cursor.execute("INSERT INTO jogador VALUES {self.nome, self.cpf, self.email, self.idade, self.endereco, self.senha}")
+                dados = f"INSERT INTO jogador VALUES ('{self.cpf}', '{self.nome}', {self.idade}, '{self.endereco}', '{self.email}', '{self.senha}')"
+                cursor.execute(dados)
                 #salvamento do banco de dados
                 banco.commit()
                 print("Usuário cadastrado com sucesso.")
