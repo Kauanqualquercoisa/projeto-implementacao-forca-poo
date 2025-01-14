@@ -1,9 +1,12 @@
-import functions
+
 from functions import Jogador
 import sqlite3 as sql
 import redefinir_senha
 from redefinir_senha import redefinir_senha
 import database
+import verificar_senha_cpf 
+
+
 
 def menu_principal():
 
@@ -16,7 +19,7 @@ def menu_principal():
 
     if opcao in opcoes:
         if opcao == 1:
-            pass
+            verificar_senha_cpf.verificar_senha_cpf()
         elif opcao == 2:
             novo_usuario = Jogador()
             novo_usuario.cadastrar_usuario()
@@ -39,8 +42,8 @@ def menu_administrador():
     print("-"*15+" MENU ADMINISTRADOR "+"-"*15)
     print("\t1. Jogar\n\t2. Cadastrar novo usuário\n\t3. Recuperar senha\n\t4. Entrar como administrador\n\t5. Sair")
     print("-"*60)
-    
-    
+
+
 def entrar_como_administrador():
     login = str(input("Digite o login de administrador: "))
     senha = str(input("Digite a senha de administrador: "))
@@ -48,5 +51,3 @@ def entrar_como_administrador():
     banco = sql.connect(database.start_db.DIRETORIO_FINAL)
     cursor = banco.cursor()
     cursor.execute
-
-

@@ -5,6 +5,7 @@ import database
 import sqlite3 as sql
 import database.start_db
 
+
 class Jogador():
     def __init__(self, cpf = "", nome = "", email = "", idade = "", cep = "", endereco = "", senha = ""):
 
