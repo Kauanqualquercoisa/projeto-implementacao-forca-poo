@@ -8,7 +8,7 @@
 
 - [Rômulo Santana](https://github.com/romulossant)
 
-- [Amanda Frasson]()
+- [Amanda Frasson](https://github.com/amanda-frasson)
 
 ## Email do Projeto
 

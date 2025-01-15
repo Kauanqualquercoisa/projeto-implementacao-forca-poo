@@ -5,6 +5,7 @@ import redefinir_senha
 from redefinir_senha import redefinir_senha
 import database
 from database import start_db
+import verificar_s_c
 
 def menu_principal():
 
@@ -17,7 +18,7 @@ def menu_principal():
 
     if opcao in opcoes:
         if opcao == 1:
-            pass
+            verificar_s_c.verificar_s_c()
         elif opcao == 2:
             novo_usuario = Jogador()
             novo_usuario.cadastrar_usuario()
@@ -33,7 +34,7 @@ def menu_principal():
             return
     else:
         print("Digite uma opção válida!")
-        menu_principal()
+    menu_principal()
 
 def entrar_como_administrador():
     login = str(input("\nDigite o login de administrador: "))
