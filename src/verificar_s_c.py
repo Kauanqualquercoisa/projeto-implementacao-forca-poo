@@ -2,8 +2,11 @@ import database
 import sqlite3 as sql
 import database.start_db
 from menus import *
-
+from colorama import Fore, Style, init # biblioteca para colorir a mensagem no terminal
 import pyttsx3 # Importa a biblioteca para TTS (texto para fala)
+from jogar import sortear_pergunta 
+
+init()  # Inicializa o colorama
 
 # Configuração do pyttsx3
 def falar(texto):
@@ -27,10 +30,14 @@ def verificar_s_c():
         # Se o jogador for encontrado
         nome_jogador = resultado[0] #coloca o nome do jogador
         
+        print(Fore.GREEN + "\nLogin realizado com sucesso!\n" + Style.RESET_ALL)
         
-        mensagem = f"Bem-vindo, {nome_jogador}!"
+        mensagem = f"\nBem-vindo, {nome_jogador}!\n"
+        
         print(mensagem)  
         falar(mensagem)  #Fala a mensagem em áudio
+        
+        
         
         # menu do jogo
         mensagem = f'''
@@ -48,13 +55,14 @@ def verificar_s_c():
         match opcao:
             case 1:
                 print('Jogar\n')
-                
+                pergunta = sortear_pergunta()
             case 2:
                 print('Atualizar Dados\n')
+                
             case 3:
                 print('Voltando para o Menu Principal\n')
                 
             case _:
                 print('Opção inválida\n')
     else:
-        print('login inválido\n')
+        print(Fore.RED + "\nLogin inválido! Tente novamente.\n" + Style.RESET_ALL)
