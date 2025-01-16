@@ -4,7 +4,7 @@ import database.start_db
 from menus import *
 from colorama import Fore, Style, init # biblioteca para colorir a mensagem no terminal
 import pyttsx3 # Importa a biblioteca para TTS (texto para fala)
-from jogar import sortear_pergunta 
+from jogar import *
 
 init()  # Inicializa o colorama
 
@@ -54,8 +54,8 @@ def verificar_s_c():
         
         match opcao:
             case 1:
-                print('Jogar\n')
                 pergunta = sortear_pergunta()
+                print(pergunta)
             case 2:
                 print('Atualizar Dados\n')
                 
