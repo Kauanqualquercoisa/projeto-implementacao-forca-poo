@@ -1,3 +1,5 @@
+# Amanda Frasson e Kauã Conceição Amorim
+
 import database
 import sqlite3 as sql
 import database.start_db
