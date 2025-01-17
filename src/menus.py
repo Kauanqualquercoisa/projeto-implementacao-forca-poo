@@ -6,6 +6,7 @@ from redefinir_senha import redefinir_senha
 import database
 from database import start_db
 import verificar_s_c
+from perguntas import *
 
 def menu_principal():
 
@@ -62,7 +63,7 @@ def menu_administrador():
 
     if opcao in opcoes:
         if opcao == 1:
-            pass
+            pergunta = cadastrar_pergunta()
         elif opcao == 2:
             pass
         elif opcao == 3:
