@@ -19,7 +19,7 @@ def sortear_pergunta():
 
         # Escolhe uma pergunta aleatória
 
-        # posição_aleatoria recebe uma valor qualquer no range de 0 ao total de perguntas cadastradas
+        # posição_aleatoria recebe uma valor qualquer no range de 0 até o total de perguntas cadastradas
         posicao_aleatoria = random.randint(0, quantidade_perguntas)
 
         linha_aleatoria = dados[posicao_aleatoria]
