@@ -63,7 +63,8 @@ def menu_administrador():
 
     if opcao in opcoes:
         if opcao == 1:
-            pergunta = cadastrar_pergunta()
+            pergunta = perguntas()
+            pergunta.cadastrar_pergunta()
         elif opcao == 2:
             pass
         elif opcao == 3:
