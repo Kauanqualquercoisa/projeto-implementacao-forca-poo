@@ -24,14 +24,16 @@ def verificar_s_c():
     #conexão com o banco de dados
     banco = sql.connect(database.start_db.DIRETORIO_FINAL)
     cursor = banco.cursor()
-    cursor.execute("SELECT nome FROM jogador WHERE senha = ? AND cpf = ?", (senha_jogador, cpf_jogador))
+    cursor.execute("SELECT nome, email FROM jogador WHERE senha = ? AND cpf = ?", (senha_jogador, cpf_jogador))
     resultado = cursor.fetchone()
-    
+ 
+
     #   se encontrar o usuario correspondete ao cpf e senha inserido
     if resultado:  
         # Se o jogador for encontrado
         nome_jogador = resultado[0] #coloca o nome do jogador
-        
+        email_jogador= resultado[1]
+
         print(Fore.GREEN + "\nLogin realizado com sucesso!\n" + Style.RESET_ALL)
         
         mensagem = f"\nBem-vindo, {nome_jogador}!\n"
@@ -59,10 +61,10 @@ def verificar_s_c():
                 pergunta = sortear_pergunta()
                 print(pergunta)
             case 2:
-                print('Atualizar Dados\n')
+                atualizar = atualizar_dados(nome_jogador,cpf_jogador,senha_jogador,email_jogador)
                 
             case 3:
-                print('Voltando para o Menu Principal\n')
+                print('Voltando para o menu principal\n')
                 
             case _:
                 print('Opção inválida\n')
