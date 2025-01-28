@@ -1,11 +1,10 @@
-import functions
-from functions import Jogador
+import jogador
+from jogador import Jogador
 import sqlite3 as sql
-import redefinir_senha
-from redefinir_senha import redefinir_senha
+import senhas
+import menu_jogo
 import database
 from database import start_db
-import verificar_s_c
 from perguntas import *
 
 def menu_principal():
@@ -19,17 +18,17 @@ def menu_principal():
 
     if opcao in opcoes:
         if opcao == 1:
-            verificar_s_c.verificar_s_c()
+            menu_jogo.opcoes_menu()
         elif opcao == 2:
             novo_usuario = Jogador()
             novo_usuario.cadastrar_usuario()
             menu_principal()
         elif opcao == 3:
-            redefinir_senha()
+            senhas.redefinir_senha()
             menu_principal()
         elif opcao == 4:
             entrar_como_administrador()
-            menu_principal
+            menu_principal()
         elif opcao == 5:
             print("\tObrigado por jogar!")
             return
@@ -63,14 +62,20 @@ def menu_administrador():
 
     if opcao in opcoes:
         if opcao == 1:
-            pergunta = perguntas()
+            pergunta = Perguntas()
             pergunta.cadastrar_pergunta()
         elif opcao == 2:
-            pass
+            pergunta = Perguntas()
+            pergunta.atualizar_pergunta()
+            
         elif opcao == 3:
-            pass
+            pergunta = Perguntas()
+            pergunta.remover_pergunta()
+            
         elif opcao == 4:
-            pass
+            pergunta = Perguntas()
+            pergunta.listar_perguntas()
+            
         elif opcao == 5:
             menu_principal()
     print("Digite uma opção válida!")
