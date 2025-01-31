@@ -1,90 +1,99 @@
 import speech_recognition as sr
 from perguntas import Perguntas
+from unidecode import unidecode
+
 
 def reconhecer_letra():
-    
-     # inicializa o reconhecedor de voz criando uma instancia de sua classe
+
+    # inicializa o reconhecedor de voz criando uma instancia de sua classe
     reconhecedor = sr.Recognizer()
-    
+
     with sr.Microphone() as source:
         
-        print("Ajustando para ruído de fundo. Aguarde um momento...")
-        reconhecedor.adjust_for_ambient_noise(source, duration=3)
-        
-        print("Fale algo: ")
-        
-        try:
-            # Chama a funcao de reducao de ruido disponivel na speech_recognition
-            # reconhecedor.adjust_for_ambient_noise(source)
+        while True:
+
+            print("Ajustando para ruído de fundo. Aguarde um momento...")
+            reconhecedor.adjust_for_ambient_noise(source, duration=3)
             
-            # audio é um objeto que recebe uma informação de audio a partir do método listen()
-            audio = reconhecedor.listen(source, timeout=4, phrase_time_limit=4)
+            print("Fale algo: ")
+            try:
+                # Chama a funcao de reducao de ruido disponivel na speech_recognition
+                # reconhecedor.adjust_for_ambient_noise(source)
+
+                # audio é um objeto que recebe uma informação de audio a partir do método listen()
+                audio = reconhecedor.listen(source, timeout=4, phrase_time_limit=4)
+
+                # conversão de audio em texto usando o serviço de reconhecimento de fala do google
+                texto = reconhecedor.recognize_google(audio, language='pt-BR')
+
+            # Retorna tudo que o jogador disser:
+                print(texto)
+                return texto
             
-            
-             
-            # conversão de audio em texto usando o serviço de reconhecimento de fala do google
-            texto = reconhecedor.recognize_google(audio, language='pt-BR')
-            
-        # Retorna tudo que o jogador disser:
-            return texto
-        
-        except sr.UnknownValueError:
-            print("Não entendi o que você disse. Tente novamente.")
-        except sr.RequestError as e:
-            print(f"Erro no serviço de reconhecimento de fala: {e}")
+            except sr.UnknownValueError:
+                print("Não entendi o que você disse. Tente novamente.")
+                pass
+            except sr.RequestError as e:
+                print(f"Erro no serviço de reconhecimento de fala: {e}")
+                pass
 
 
 def separar_letra(texto):
+    
     texto = texto[0]
     if len(texto) == 1 and texto.isalpha():
-     print(f"Você falou a letra: {texto.upper()}")
-    else:
-     print("Por favor, fale apenas uma letra.")
+        print(f"Você falou a letra: {texto.lower()}")
+        return texto
     
-    
+
+
 def jogo_forca():
-    #cria uma instância da classe Perguntas
+    # cria uma instância da classe Perguntas
     dados_aleatorios = Perguntas()
-    
-    #chama o método para preencher os atributos das perguntas de forma aleatória
+
+    # chama o método para preencher os atributos das perguntas de forma aleatória
     dados_aleatorios.sortear_pergunta()
-    
-    palavra = dados_aleatorios.palavra
+
+    palavra = unidecode(dados_aleatorios.palavra.lower())
     dica = dados_aleatorios.dica
     max_tentativas = int(dados_aleatorios.max_tentativas)
     tentativas_restantes = int(max_tentativas)
-    palavra_secreta = ['']*len[palavra]
-    
+    palavra_secreta = ['_']*len(palavra)
+
     while True:
-        
-        texto = reconhecer_letra()
-        letra = separar_letra(texto)
-        
+
         mensagem = f'''
                 ------------------ Jogo da Forca -----------------
 
                 Dica:{dica}
 
-                Palavra: {palavra_secreta})
+                Palavra: {''.join(palavra_secreta)}
 
                 Tentativas: {tentativas_restantes} / {max_tentativas}
 
-                    Fale uma letra:{letra}                          
+                    Fale uma letra:
         '''
 
         print(mensagem)
+
+        texto = reconhecer_letra()
+        letra = separar_letra(texto).lower()
         
-        if tentativas_restantes != 0:
-            for letra_falada in letra:
-                print(f'Tentando a letra: {letra_falada}')
-                
-                if letra_falada in palavra:
-                    for i, letra_contida in enumerate(palavra):
-                        if letra_contida == letra_falada:
-                            palavra_secreta[i] = letra_falada
-                else:
-                    tentativas_restantes -= 1        
+        
+        if palavra_secreta != palavra:
+            if tentativas_restantes != 0:
+                for letra_falada in letra:
+                    print(f'Tentando a letra: {letra_falada}')
+
+                    if letra_falada in palavra:
+                        for i, letra_contida in enumerate(palavra):
+                            if letra_contida == letra_falada:
+                                palavra_secreta[i] = letra_falada
+                    else:
+                        tentativas_restantes -= 1
+            else:
+                print(f"\nVocê perdeu!\n")
+                break
         else:
-            print(f"\nVocê perdeu!\n")
-            break       
-    
+            print(f'Parabéns, você ganhou!\n')
+            break
