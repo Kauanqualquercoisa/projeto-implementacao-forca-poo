@@ -100,7 +100,7 @@ class Perguntas():
                 print(f"Erro ao exportar dados")
         banco.close()
 
-    def listar_perguntas(self):
+    def listar_perguntas(self, numero_pergunta):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
         cursor = banco.cursor()
         while True:
@@ -118,7 +118,8 @@ class Perguntas():
             for i in range(tam):
                 print(lista_perguntas[i])
             break
-        self.exportar_para_csv('perguntas_csv')
+        if numero_pergunta == '0': 
+            self.exportar_para_csv('perguntas_csv')
 
 
     def atualizar_pergunta(self):
@@ -126,7 +127,7 @@ class Perguntas():
         cursor = banco.cursor()
 
         funcao_listar = Perguntas()
-        funcao_listar.listar_perguntas()
+        funcao_listar.listar_perguntas(numero_pergunta='1')
 
         self.codigo = int(
             input("\n\nQual o número da pergunta que deseja atualizar? "))
@@ -175,7 +176,7 @@ class Perguntas():
         cursor = banco.cursor()
 
         funcao_listar = Perguntas()
-        funcao_listar.listar_perguntas()
+        funcao_listar.listar_perguntas(numero_pergunta='2')
         # funcao_listar=listar_perguntas()
 
         self.codigo = int(
@@ -189,6 +190,18 @@ class Perguntas():
                 "DELETE FROM perguntas WHERE codigo = ?", (self.codigo,))
             banco.commit()
             print(f"\nA pergunta {self.codigo} foi removida com sucesso.\n")
+            
+            # Atualizar os códigos para manter a sequência correta
+            cursor.execute("SELECT codigo FROM perguntas ORDER BY codigo")
+            perguntas = cursor.fetchall()
+
+            novo_codigo = 1
+            for pergunta in perguntas:
+                cursor.execute("UPDATE perguntas SET codigo = ? WHERE codigo = ?", (novo_codigo, pergunta[0]))
+                novo_codigo += 1
+
+            banco.commit()
+        
         else:
             print("\nEsta pergunta não existe.\n")
 
