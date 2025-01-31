@@ -78,5 +78,6 @@ def menu_administrador():
             
         elif opcao == 5:
             menu_principal()
-    print("Digite uma opção válida!")
+        else:
+            print("Digite uma opção válida!")
 

@@ -1,7 +1,9 @@
 import speech_recognition as sr
 from perguntas import Perguntas
-from unidecode import unidecode
+from unidecode import unidecode # biblioteca para retirar os acentos 
+from colorama import Fore, Style, init # biblioteca para colorir a mensagem no terminal
 
+init() # Inicializa o colorama
 
 def reconhecer_letra():
 
@@ -9,42 +11,42 @@ def reconhecer_letra():
     reconhecedor = sr.Recognizer()
 
     with sr.Microphone() as source:
-        
+
+        print("\nAjustando para ruído de fundo. Aguarde um momento...\n")
         while True:
 
-            print("Ajustando para ruído de fundo. Aguarde um momento...")
             reconhecedor.adjust_for_ambient_noise(source, duration=3)
-            
-            print("Fale algo: ")
+
+            print("\nFale algo: \n")
             try:
                 # Chama a funcao de reducao de ruido disponivel na speech_recognition
                 # reconhecedor.adjust_for_ambient_noise(source)
 
                 # audio é um objeto que recebe uma informação de audio a partir do método listen()
-                audio = reconhecedor.listen(source, timeout=4, phrase_time_limit=4)
+                audio = reconhecedor.listen(
+                    source, timeout=4, phrase_time_limit=4)
 
                 # conversão de audio em texto usando o serviço de reconhecimento de fala do google
                 texto = reconhecedor.recognize_google(audio, language='pt-BR')
 
             # Retorna tudo que o jogador disser:
-                print(texto)
+
                 return texto
-            
+
             except sr.UnknownValueError:
-                print("Não entendi o que você disse. Tente novamente.")
+                print("\nNão entendi o que você disse. Tente novamente.\n")
                 pass
             except sr.RequestError as e:
-                print(f"Erro no serviço de reconhecimento de fala: {e}")
+                print(f"\nErro no serviço de reconhecimento de fala: {e}\n")
                 pass
 
 
 def separar_letra(texto):
-    
+
     texto = texto[0]
     if len(texto) == 1 and texto.isalpha():
-        print(f"Você falou a letra: {texto.lower()}")
+        # print(f"Você falou a letra: {unidecode(texto.lower())}")
         return texto
-    
 
 
 def jogo_forca():
@@ -55,6 +57,7 @@ def jogo_forca():
     dados_aleatorios.sortear_pergunta()
 
     palavra = unidecode(dados_aleatorios.palavra.lower())
+    palavra = palavra.replace(" ", "_")
     dica = dados_aleatorios.dica
     max_tentativas = int(dados_aleatorios.max_tentativas)
     tentativas_restantes = int(max_tentativas)
@@ -77,23 +80,40 @@ def jogo_forca():
         print(mensagem)
 
         texto = reconhecer_letra()
-        letra = separar_letra(texto).lower()
-        
-        
-        if palavra_secreta != palavra:
-            if tentativas_restantes != 0:
-                for letra_falada in letra:
-                    print(f'Tentando a letra: {letra_falada}')
+        letra = unidecode(separar_letra(texto).lower())
 
-                    if letra_falada in palavra:
-                        for i, letra_contida in enumerate(palavra):
-                            if letra_contida == letra_falada:
-                                palavra_secreta[i] = letra_falada
-                    else:
-                        tentativas_restantes -= 1
-            else:
-                print(f"\nVocê perdeu!\n")
+        if tentativas_restantes != 0:
+            for letra_falada in letra:
+                print(f'Tentando a letra: {letra_falada}')
+
+                if letra_falada in palavra:
+                    for i, letra_contida in enumerate(palavra):
+                        if letra_contida == letra_falada:
+                            palavra_secreta[i] = letra_falada
+                else:
+                    tentativas_restantes -= 1
+
+            if ''.join(palavra_secreta) == palavra:
+                
+                palavra = palavra.replace("_", " ")
+
+                mensagem = f'''
+                ------------------ Jogo da Forca -----------------
+
+                Dica:{dica}
+
+                Palavra: {palavra}
+
+                Tentativas: {tentativas_restantes} / {max_tentativas}
+
+
+                '''
+
+                print(mensagem)
+
+                print(Fore.GREEN + "\nParabéns, você ganhou!\n" + Style.RESET_ALL)
                 break
+
         else:
-            print(f'Parabéns, você ganhou!\n')
+            print(Fore.RED + "\nVocê perdeu!\n" + Style.RESET_ALL)
             break
