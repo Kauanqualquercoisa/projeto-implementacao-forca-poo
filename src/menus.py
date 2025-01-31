@@ -30,11 +30,10 @@ def menu_principal():
             entrar_como_administrador()
             menu_principal()
         elif opcao == 5:
-            print("\tObrigado por jogar!")
-            return
+            print("\n\tObrigado por jogar!")  
     else:
-        print("Digite uma opção válida!")
-    menu_principal()
+        print("\n\tDigite uma opção válida!")
+    
 
 def entrar_como_administrador():
     login = str(input("\nDigite o login de administrador: "))
@@ -74,7 +73,7 @@ def menu_administrador():
             
         elif opcao == 4:
             pergunta = Perguntas()
-            pergunta.listar_perguntas()
+            pergunta.listar_perguntas(numero_pergunta='0')
             
         elif opcao == 5:
             menu_principal()
