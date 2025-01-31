@@ -130,7 +130,7 @@ class Jogador():
             if self.requisicao_ok:
                 return self.endereco
             if self.erro_400:
-                print("Erro 400 - Bad Request: Insira um CPF válido e tente novamente!")
+                print("Erro 400 - Bad Request: Insira um CEP válido e tente novamente!")
             if self.erro_500:
                 print("Erro 500 - Internal Server Error: Ocorreu um erro no servidor da API")
                 break

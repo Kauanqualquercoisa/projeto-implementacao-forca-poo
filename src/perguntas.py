@@ -170,6 +170,7 @@ class Perguntas():
 
         banco.close()
     
+    
     def sortear_pergunta(self):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
         cursor = banco.cursor()
