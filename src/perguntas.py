@@ -177,8 +177,7 @@ class Perguntas():
 
         funcao_listar = Perguntas()
         funcao_listar.listar_perguntas(numero_pergunta='2')
-        # funcao_listar=listar_perguntas()
-
+        
         self.codigo = int(
             input("\n\nQual o número da pergunta que deseja remover? "))
         cursor.execute(
@@ -231,3 +230,6 @@ class Perguntas():
             return None  # Caso não existam perguntas no banco
 
         banco.close()
+
+
+

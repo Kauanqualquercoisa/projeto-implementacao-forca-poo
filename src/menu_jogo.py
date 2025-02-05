@@ -65,7 +65,6 @@ def opcoes_menu():
             case 1:
                 pergunta = Perguntas()
                 pergunta.sortear_pergunta()
-                
                 jogo_forca()
                             
             case 2:
@@ -73,8 +72,9 @@ def opcoes_menu():
                         
             case 3:
                 print('Voltando para o menu principal\n')
-                        
+                pass
             case _:
                 print('Opção inválida\n')
     else:
-        menu_principal()
+        print(f"\nUsuário não encontrado\n")
+        pass
