@@ -1,9 +1,11 @@
 import speech_recognition as sr
 from perguntas import Perguntas
-from unidecode import unidecode # biblioteca para retirar os acentos 
-from colorama import Fore, Style, init # biblioteca para colorir a mensagem no terminal
+from unidecode import unidecode  # biblioteca para retirar os acentos
+# biblioteca para colorir a mensagem no terminal
+from colorama import Fore, Style, init
 
-init() # Inicializa o colorama
+init()  # Inicializa o colorama
+
 
 def reconhecer_letra():
 
@@ -94,7 +96,7 @@ def jogo_forca():
                     tentativas_restantes -= 1
 
             if ''.join(palavra_secreta) == palavra:
-                
+
                 palavra = palavra.replace("_", " ")
 
                 mensagem = f'''

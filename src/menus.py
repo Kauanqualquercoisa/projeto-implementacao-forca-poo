@@ -19,6 +19,7 @@ def menu_principal():
     if opcao in opcoes:
         if opcao == 1:
             menu_jogo.opcoes_menu()
+            menu_principal()
         elif opcao == 2:
             novo_usuario = Jogador()
             novo_usuario.cadastrar_usuario()
@@ -28,11 +29,13 @@ def menu_principal():
             menu_principal()
         elif opcao == 4:
             entrar_como_administrador()
-            menu_principal()
+            menu_administrador()
         elif opcao == 5:
             print("\n\tObrigado por jogar!")  
+            
     else:
         print("\n\tDigite uma opção válida!")
+        
     
 
 def entrar_como_administrador():
@@ -63,17 +66,22 @@ def menu_administrador():
         if opcao == 1:
             pergunta = Perguntas()
             pergunta.cadastrar_pergunta()
+            pass
+        
         elif opcao == 2:
             pergunta = Perguntas()
             pergunta.atualizar_pergunta()
+            pass
             
         elif opcao == 3:
             pergunta = Perguntas()
             pergunta.remover_pergunta()
+            pass
             
         elif opcao == 4:
             pergunta = Perguntas()
             pergunta.listar_perguntas(numero_pergunta='0')
+            
             
         elif opcao == 5:
             menu_principal()
