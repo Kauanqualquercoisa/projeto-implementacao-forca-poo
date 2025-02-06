@@ -57,34 +57,30 @@ class Perguntas():
                 "\nDeseja inserir mais perguntas? [S/N]: \n").strip().upper()
 
             if escolha != 'S':
-                break
+                print("\nVoltando para o menu administrador...\n")
+                banco.close()
+                return
             else:
                 pass  # O loop continua para cadastrar mais dados na tabela perguntas
 
-        # fecha o banco de dados
-        banco.close()
-
-    #    with open(f'{diretorio}', 'a') as file:
-    #        file.write ("\n".join(escritor_csv))
-    # Certifique-se de passar um caminho de arquivo como string
-
-    #
+            # fecha o banco de dados
+            banco.close()
 
     def exportar_para_csv(self, perguntas_csv=''):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
         cursor = banco.cursor()
 
         opcao = str(input("\nDeseja exportar os dados das perguntas? [S/N] "))
-        tipo_opcoes = ['S','s','sim','SIM']   
-        
+        tipo_opcoes = ['S', 's', 'sim', 'SIM']
+
         if opcao in tipo_opcoes:
             try:
                 # Consultar todos os dados da tabela perguntas
                 cursor.execute("SELECT * FROM perguntas")
                 dados = cursor.fetchall()  # Obtém todos os registros
                 colunas = [descricao[0]
-                        # Nomes das colunas
-                        for descricao in cursor.description]
+                           # Nomes das colunas
+                           for descricao in cursor.description]
 
                 # Criar o arquivo CSV e escrever os dados
                 with open(perguntas_csv, mode='w', newline='', encoding='utf-8') as arquivo_csv:
@@ -95,7 +91,7 @@ class Perguntas():
                     escritor_csv.writerow(colunas)
                     # Escrever os dados
                     escritor_csv.writerows(dados)
-                    
+
             except sql.Error:
                 print(f"Erro ao exportar dados")
         banco.close()
@@ -118,9 +114,9 @@ class Perguntas():
             for i in range(tam):
                 print(lista_perguntas[i])
             break
-        if numero_pergunta == '0': 
+        if numero_pergunta == '0':
             self.exportar_para_csv('perguntas_csv')
-
+            return
 
     def atualizar_pergunta(self):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
@@ -177,7 +173,7 @@ class Perguntas():
 
         funcao_listar = Perguntas()
         funcao_listar.listar_perguntas(numero_pergunta='2')
-        
+
         self.codigo = int(
             input("\n\nQual o número da pergunta que deseja remover? "))
         cursor.execute(
@@ -189,18 +185,19 @@ class Perguntas():
                 "DELETE FROM perguntas WHERE codigo = ?", (self.codigo,))
             banco.commit()
             print(f"\nA pergunta {self.codigo} foi removida com sucesso.\n")
-            
+
             # Atualizar os códigos para manter a sequência correta
             cursor.execute("SELECT codigo FROM perguntas ORDER BY codigo")
             perguntas = cursor.fetchall()
 
             novo_codigo = 1
             for pergunta in perguntas:
-                cursor.execute("UPDATE perguntas SET codigo = ? WHERE codigo = ?", (novo_codigo, pergunta[0]))
+                cursor.execute(
+                    "UPDATE perguntas SET codigo = ? WHERE codigo = ?", (novo_codigo, pergunta[0]))
                 novo_codigo += 1
 
             banco.commit()
-        
+
         else:
             print("\nEsta pergunta não existe.\n")
 
@@ -230,6 +227,3 @@ class Perguntas():
             return None  # Caso não existam perguntas no banco
 
         banco.close()
-
-
-
