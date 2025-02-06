@@ -29,7 +29,7 @@ def menu_principal():
             menu_principal()
         elif opcao == 4:
             entrar_como_administrador()
-            menu_administrador()
+            
         elif opcao == 5:
             print("\n\tObrigado por jogar!")  
             
@@ -66,25 +66,24 @@ def menu_administrador():
         if opcao == 1:
             pergunta = Perguntas()
             pergunta.cadastrar_pergunta()
-            pass
+            menu_administrador()
         
         elif opcao == 2:
             pergunta = Perguntas()
             pergunta.atualizar_pergunta()
-            pass
+            menu_administrador()
             
         elif opcao == 3:
             pergunta = Perguntas()
             pergunta.remover_pergunta()
-            pass
+            menu_administrador()
             
         elif opcao == 4:
             pergunta = Perguntas()
             pergunta.listar_perguntas(numero_pergunta='0')
-            
+            menu_administrador()
             
         elif opcao == 5:
             menu_principal()
         else:
             print("Digite uma opção válida!")
-

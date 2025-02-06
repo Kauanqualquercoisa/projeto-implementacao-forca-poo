@@ -4,6 +4,7 @@ from unidecode import unidecode  # biblioteca para retirar os acentos
 # biblioteca para colorir a mensagem no terminal
 from colorama import Fore, Style, init
 
+
 init()  # Inicializa o colorama
 
 
@@ -11,37 +12,40 @@ def reconhecer_letra():
 
     # inicializa o reconhecedor de voz criando uma instancia de sua classe
     reconhecedor = sr.Recognizer()
+    
+    try:
+        with sr.Microphone() as source:
 
-    with sr.Microphone() as source:
+            print("\nAjustando para ruído de fundo. Aguarde um momento...\n")
+            while True:
 
-        print("\nAjustando para ruído de fundo. Aguarde um momento...\n")
-        while True:
+                reconhecedor.adjust_for_ambient_noise(source, duration=3)
 
-            reconhecedor.adjust_for_ambient_noise(source, duration=3)
+                print("\nFale algo: \n")
+                try:
+                    # Chama a funcao de reducao de ruido disponivel na speech_recognition
+                    # reconhecedor.adjust_for_ambient_noise(source)
 
-            print("\nFale algo: \n")
-            try:
-                # Chama a funcao de reducao de ruido disponivel na speech_recognition
-                # reconhecedor.adjust_for_ambient_noise(source)
+                    # audio é um objeto que recebe uma informação de audio a partir do método listen()
+                    audio = reconhecedor.listen(
+                        source, timeout=4, phrase_time_limit=4)
 
-                # audio é um objeto que recebe uma informação de audio a partir do método listen()
-                audio = reconhecedor.listen(
-                    source, timeout=4, phrase_time_limit=4)
+                    # conversão de audio em texto usando o serviço de reconhecimento de fala do google
+                    texto = reconhecedor.recognize_google(audio, language='pt-BR')
 
-                # conversão de audio em texto usando o serviço de reconhecimento de fala do google
-                texto = reconhecedor.recognize_google(audio, language='pt-BR')
+                # Retorna tudo que o jogador disser:
 
-            # Retorna tudo que o jogador disser:
+                    return texto
 
-                return texto
-
-            except sr.UnknownValueError:
-                print("\nNão entendi o que você disse. Tente novamente.\n")
-                pass
-            except sr.RequestError as e:
-                print(f"\nErro no serviço de reconhecimento de fala: {e}\n")
-                pass
-
+                except sr.UnknownValueError:
+                    print("\nNão entendi o que você disse. Tente novamente.\n")
+                    pass
+                except sr.RequestError as e:
+                    print(f"\nErro no serviço de reconhecimento de fala: {e}\n")
+                    pass
+    except OSError:
+        print("\nErro: Nenhum microfone foi detectado. Conecte um microfone e tente novamente.\n")
+        return
 
 def separar_letra(texto):
 
@@ -80,9 +84,17 @@ def jogo_forca():
         '''
 
         print(mensagem)
-
-        texto = reconhecer_letra()
-        letra = unidecode(separar_letra(texto).lower())
+        
+        try:
+            texto = reconhecer_letra()
+            if texto is None:
+                raise ValueError("Nenhuma entrada foi reconhecida.")  # Tratamento adicional para erro inesperado
+            
+            letra = unidecode(separar_letra(texto).lower())
+            
+        except ValueError as e:
+            print(f"\nErro ao reconhecer a entrada: {e}\n")
+            break  # Volta para o menu principal
 
         if tentativas_restantes != 0:
             for letra_falada in letra:
