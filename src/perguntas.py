@@ -76,6 +76,7 @@ class Perguntas():
 
         opcao = str(input("\nDeseja exportar os dados das perguntas? [S/N] "))
         tipo_opcoes = ['S', 's', 'sim', 'SIM']
+        tipo_opcoes_negativas = ['N', 'n', 'não', 'NÃO']
 
         if opcao in tipo_opcoes:
             try:
@@ -98,6 +99,15 @@ class Perguntas():
 
             except sql.Error:
                 print(f"Erro ao exportar dados")
+        
+        elif opcao not in tipo_opcoes and opcao not in tipo_opcoes_negativas:
+            print("\nPor favor, escolha uma opção válida!\n")
+            self.listar_perguntas(numero_pergunta='0')
+            
+        elif opcao in tipo_opcoes_negativas:
+            print("\nVoltando para o menu administrador...\n")
+            return
+            
         banco.close()
 
     def listar_perguntas(self, numero_pergunta):
