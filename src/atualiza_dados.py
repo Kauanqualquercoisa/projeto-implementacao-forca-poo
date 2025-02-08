@@ -1,4 +1,4 @@
-# Kauã Conceição Amorim
+# Amanda Frasson
 
 import database
 from database import start_db

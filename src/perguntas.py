@@ -15,6 +15,8 @@ class Perguntas():
         self.palavra = palavra
         self.max_tentativas = max_tentativas
         # self.perguntas_csv= perguntas_csv
+        
+# Kauã Conceição Amorim
 
     def cadastrar_pergunta(self):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
@@ -65,6 +67,8 @@ class Perguntas():
 
             # fecha o banco de dados
             banco.close()
+            
+# Amanda Frasson
 
     def exportar_para_csv(self, perguntas_csv=''):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
@@ -72,6 +76,7 @@ class Perguntas():
 
         opcao = str(input("\nDeseja exportar os dados das perguntas? [S/N] "))
         tipo_opcoes = ['S', 's', 'sim', 'SIM']
+        tipo_opcoes_negativas = ['N', 'n', 'não', 'NÃO']
 
         if opcao in tipo_opcoes:
             try:
@@ -94,6 +99,15 @@ class Perguntas():
 
             except sql.Error:
                 print(f"Erro ao exportar dados")
+        
+        elif opcao not in tipo_opcoes and opcao not in tipo_opcoes_negativas:
+            print("\nPor favor, escolha uma opção válida!\n")
+            self.listar_perguntas(numero_pergunta='0')
+            
+        elif opcao in tipo_opcoes_negativas:
+            print("\nVoltando para o menu administrador...\n")
+            return
+            
         banco.close()
 
     def listar_perguntas(self, numero_pergunta):
@@ -202,6 +216,8 @@ class Perguntas():
             print("\nEsta pergunta não existe.\n")
 
         banco.close()
+        
+# Kauã Conceição Amorim
 
     def sortear_pergunta(self):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)

@@ -10,6 +10,8 @@ from colorama import Fore, Style, init # biblioteca para colorir a mensagem no t
 
 init()  # Inicializa o colorama
 
+#Romulo Santos Santana
+
 def redefinir_senha():
     while True:
         email_jogador = str(input("\nDigite seu email: "))
@@ -72,7 +74,8 @@ def redefinir_senha():
             banco.close()
         return
         
-    
+# Kauã Conceição Amorim  
+
 def verifica_senha_cpf(cpf_jogador, senha_jogador):
     
     #conexão com o banco de dados
