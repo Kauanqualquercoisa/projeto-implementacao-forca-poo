@@ -1,3 +1,5 @@
+# Kauã Conceição Amorim
+
 import speech_recognition as sr
 from perguntas import Perguntas
 from unidecode import unidecode  # biblioteca para retirar os acentos

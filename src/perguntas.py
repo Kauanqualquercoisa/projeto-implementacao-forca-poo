@@ -15,6 +15,8 @@ class Perguntas():
         self.palavra = palavra
         self.max_tentativas = max_tentativas
         # self.perguntas_csv= perguntas_csv
+        
+# Kauã Conceição Amorim
 
     def cadastrar_pergunta(self):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
@@ -65,6 +67,8 @@ class Perguntas():
 
             # fecha o banco de dados
             banco.close()
+            
+# Amanda Frasson
 
     def exportar_para_csv(self, perguntas_csv=''):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
@@ -202,6 +206,8 @@ class Perguntas():
             print("\nEsta pergunta não existe.\n")
 
         banco.close()
+        
+# Kauã Conceição Amorim
 
     def sortear_pergunta(self):
         banco = sql.connect(database.start_db.DIRETORIO_FINAL)
